@@ -36,7 +36,7 @@ async function getRubric (courseId, assignmentId, rubricId) {
     const rubricData = assessment.data.map(({ points, comments }) => ({ points, comments }))
 
     // link to assignment
-    const url = submission.attachments[0].url
+    const url = submission.attachments ? submission.attachments[0].url : ''
 
     // assignment overall comments, filter out student comments
     const overallComments = submission.submission_comments
