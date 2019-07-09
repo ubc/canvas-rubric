@@ -37,7 +37,7 @@ An example `CANVAS_API_DOMAIN` is `https://{school}.instructure.com/api/v1`
 ### Example usage (written at end of index.js)
 
 ```javascript
-getRubric(/* course id */ 123, /* assignment id */ 456, /* rubric id */ 789)
+getRubric(/* course id */, /* assignment id */, /* rubric id */)
   .then(data => writeToCSV(data))
 ```
 
