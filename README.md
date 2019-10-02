@@ -20,7 +20,7 @@ These instructions will get you a copy of the project up and running on your loc
 1. **Install [Node 8.0.0 or greater](https://nodejs.org)**.
 2. **Install [Git](https://git-scm.com/downloads)**.
 
-### Installion
+### Installation
 
 1. Clone this repo. `git clone https://github.com/ubccapico/canvas-rubric.git`
 1. Then cd into the repo. `cd canvas-rubric`
