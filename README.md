@@ -37,7 +37,7 @@ An example `CANVAS_API_DOMAIN` is `https://{school}.instructure.com/api/v1`
 ### Example usage (written at end of index.js)
 
 ```javascript
-getRubric(/* course id */ 123, /* assignment id */ 456, /* rubric id */ 789)
+getRubric(/* course id */, /* assignment id */, /* rubric id */)
   .then(data => writeToCSV(data))
 ```
 
@@ -45,8 +45,8 @@ This should output a CSV named `output.csv` in the `canvas-rubric` folder.
 
 ## Authors
 
-* **Justin Lee**
-https://github.com/justin0022 | justin.lee@ubc.ca
+* [justin0022](https://github.com/justin0022) -
+**Justin Lee** &lt;justin.lee@ubc.ca&gt;
 
 ## License
 
