@@ -23,19 +23,24 @@ async function getRubric (courseId, assignmentId, rubricId) {
 
     // get student info
     const submissionId = assessment.artifact_id
-    const submission = submissions.find(submission => submission.id === submissionId) || {}
+    const submission = submissions
+      .find(submission => submission.id === submissionId) || {}
     const studentId = submission.user_id || ''
-    const student = sections.find(student => student.id === studentId) || {}
+    const student = sections
+      .find(student => student.id === studentId) || {}
     const studentName = student.name || ''
     const studentNumber = student.sis_user_id || ''
     const section = student.section || ''
 
     // get rubric info
     const totalGrade = assessment.score
-    const rubricData = assessment.data.map(({ points, comments }) => ({ points, comments }))
+    const rubricData = assessment.data
+      .map(({ points, comments }) => ({ points, comments }))
 
     // link to assignment
-    const url = submission.attachments ? submission.attachments[0].url : ''
+    const url = submission.attachments
+      ? submission.attachments[0].url
+      : ''
 
     // assignment overall comments, filter out student comments
     const overallComments = submission.submission_comments

@@ -1,6 +1,62 @@
+const canvasAPI = require('node-canvas-api')
 const getRubric = require('./getRubric')
 const writeToCSV = require('./writeToCSV')
-const prompts = require('prompts');
+const prompts = require('prompts')
+
+const getIds = async () => {
+  const self = await canvasAPI.getSelf()
+  const courses = await canvasAPI.getCoursesByUser(self.id)
+    .then(courses => courses
+      .map(course => ({
+        title: `${course.name}, offered ${course.start_at.split('T')[0]}`,
+        value: course.id
+      }))
+    )
+  const courseId = await prompts({
+    type: 'select',
+    name: 'value',
+    message: 'Pick the course',
+    choices: courses,
+    initial: 1
+  }).then(x => x.value)
+  const assignments = await canvasAPI.getAssignments(courseId)
+    .then(assignments => assignments
+      .map(assignment => ({
+        title: assignment.name,
+        value: assignment.id
+      }))
+    )
+  const assignmentId = await prompts({
+    type: 'select',
+    name: 'value',
+    message: 'Pick the assignment',
+    choices: assignments,
+    initial: 1
+  }).then(x => x.value)
+  const rubrics = await canvasAPI.getRubricsInCourse(courseId)
+    .then(rubrics => rubrics
+      .map(rubric => ({
+        title: rubric.title,
+        value: rubric.id
+      }))
+    )
+  const rubricId = await prompts({
+    type: 'select',
+    name: 'value',
+    message: 'Pick the rubric',
+    choices: rubrics,
+    initial: 1
+  }).then(x => x.value)
+
+  return [courseId, assignmentId, rubricId]
+}
+
+const getRubricAndWriteFile = async (courseId, assignmentId, rubricId) => {
+  console.log('Thanks, fetching data now. This may take a bit of time...')
+  const rubricData = await getRubric(courseId, assignmentId, rubricId)
+  writeToCSV(rubricData, `rubric-${courseId}-${assignmentId}-${rubricId}.csv`)
+  console.log(`Data is ready now. It's named 'rubric-${courseId}-${assignmentId}-${rubricId}.csv'`)
+}
 
 (
   async () => {
@@ -18,8 +74,8 @@ const prompts = require('prompts');
         name: 'value',
         message: 'Do you know the Canvas course id, assignment id, and rubric id that you want to download?',
         initial: true
-      })
-      if (knowIds.value) {
+      }).then(x => x.value)
+      if (knowIds) {
         let ids = []
         while (ids.length !== 3) {
           const idInput = await prompts({
@@ -32,18 +88,10 @@ const prompts = require('prompts');
           ids = idInput.value
         }
         const [courseId, assignmentId, rubricId] = ids.map(x => Number(x))
-        console.log('Thanks, fetching data now. This may take a bit of time...')
-        const rubricData = await getRubric(courseId, assignmentId, rubricId)
-        writeToCSV(rubricData, `rubric-${courseId}-${assignmentId}-${rubricId}.csv`)
-        console.log(`Data is ready now. It's named rubric-${courseId}-${assignmentId}-${rubricId}.csv`)
+        getRubricAndWriteFile(courseId, assignmentId, rubricId)
       } else {
-        // first retrieve all courses the user has
-
-        // then retrieve all assignments in the course
-
-        // then retrieve all rubrics
-
-        // then fetch data
+        const [courseId, assignmentId, rubricId] = await getIds()
+        getRubricAndWriteFile(courseId, assignmentId, rubricId)
       }
     }
   }
