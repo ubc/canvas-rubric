@@ -60,13 +60,13 @@ const getRubricAndWriteFile = async (courseId, assignmentId, rubricId) => {
 
 (
   async () => {
-    const setup = await prompts({
+    const envSetup = await prompts({
       type: 'confirm',
       name: 'value',
       message: 'Did you set the .env variable?',
       initial: true
-    })
-    if (!setup.value) {
+    }).then(x => x.value)
+    if (!envSetup) {
       console.log('Go set up your .env, instructions are on the README')
     } else {
       const knowIds = await prompts({
