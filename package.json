@@ -9,8 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "cheerio": "^1.0.0-rc.3",
     "node-canvas-api": "^1.2.8",
+    "prompts": "^2.3.0",
     "ramda": "^0.26.1"
   }
 }

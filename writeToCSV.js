@@ -9,8 +9,8 @@ const append = (pathToFile, row) => fsappend(pathToFile, row + '\r\n')
 
 const escapeComment = comment => '"' + comment.replace(/"/g, "'") + '"'
 
-const writeToCSV = data => {
-  const csv = path.join(__dirname, 'output.csv')
+const writeToCSV = (data, filename) => {
+  const csv = path.join(__dirname, '/output/', filename)
 
   const header = [
     'student_name',
