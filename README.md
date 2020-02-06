@@ -38,6 +38,11 @@ An example `CANVAS_API_DOMAIN` is `https://{school}.instructure.com/api/v1`
 * [justin0022](https://github.com/justin0022) -
 **Justin Lee** &lt;justin.lee@ubc.ca&gt;
 
+## Issues
+Run into any problems? It may be because the course you selected has no rubrics. Or it may be because you've discovered a bug.
+
+Please submit an [issue](https://github.com/ubccapico/canvas-rubric/issues/new) detailing your problem (the more context you can provide, the better) and I'll take a look.
+
 ## License
 
 This project is licensed under the GNU General Public License v3.0.

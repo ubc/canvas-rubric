@@ -17,7 +17,7 @@ const getIds = async () => {
     name: 'value',
     message: 'Pick the course',
     choices: courses,
-    initial: 1
+    initial: 0
   }).then(x => x.value)
   const assignments = await canvasAPI.getAssignments(courseId)
     .then(assignments => assignments
@@ -31,7 +31,7 @@ const getIds = async () => {
     name: 'value',
     message: 'Pick the assignment',
     choices: assignments,
-    initial: 1
+    initial: 0
   }).then(x => x.value)
   const rubrics = await canvasAPI.getRubricsInCourse(courseId)
     .then(rubrics => rubrics
@@ -45,7 +45,7 @@ const getIds = async () => {
     name: 'value',
     message: 'Pick the rubric',
     choices: rubrics,
-    initial: 1
+    initial: 0
   }).then(x => x.value)
 
   return [courseId, assignmentId, rubricId]
