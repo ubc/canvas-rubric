@@ -18,18 +18,18 @@ async function getRubric (courseId, assignmentId, rubricId) {
   return rubric.assessments.map(assessment => {
     // get TA info
     const taId = assessment.assessor_id
-    const TA = TAs.find(ta => ta.id === taId)
-    const taName = TA.name
-    const taStudentNumber = TA.sis_user_id
+    const TA = TAs.find(ta => ta.id === taId) || {}
+    const taName = TA.name || ''
+    const taStudentNumber = TA.sis_user_id || ''
 
     // get student info
     const submissionId = assessment.artifact_id
-    const submission = submissions.find(submission => submission.id === submissionId)
-    const studentId = submission.user_id
-    const student = sections.find(student => student.id === studentId)
-    const studentName = student.name
-    const studentNumber = student.sis_user_id
-    const section = student.section
+    const submission = submissions.find(submission => submission.id === submissionId) || {}
+    const studentId = submission.user_id || ''
+    const student = sections.find(student => student.id === studentId) || {}
+    const studentName = student.name || ''
+    const studentNumber = student.sis_user_id || ''
+    const section = student.section || ''
 
     // get rubric info
     const totalGrade = assessment.score
@@ -40,8 +40,10 @@ async function getRubric (courseId, assignmentId, rubricId) {
 
     // assignment overall comments, filter out student comments
     const overallComments = submission.submission_comments
-      .filter(comment => comment.author.id !== studentId)
-      .map(comment => comment.comment)
+      ? submission.submission_comments
+        .filter(comment => comment.author.id !== studentId)
+        .map(comment => comment.comment)
+      : []
 
     return {
       taName,
