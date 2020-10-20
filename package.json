@@ -10,8 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "node-canvas-api": "^1.5.1",
-    "prompts": "^2.3.0",
+    "node-canvas-api": "^1.5.9",
+    "prompts": "^2.3.2",
     "ramda": "^0.26.1"
   }
 }
