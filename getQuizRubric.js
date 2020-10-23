@@ -24,7 +24,6 @@ async function getQuizRubric (courseId, quizId, rubricId) {
     const submission = quizSubmissions
       .find(submission => submission.submission_id === submissionId) || {}
     const studentId = submission.user_id || ''
-    console.log(assessment)
     const student = sections
       .find(student => student.id === studentId) || {}
     const studentName = student.name || ''

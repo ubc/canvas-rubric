@@ -1,6 +1,8 @@
 const canvasAPI = require('node-canvas-api')
 const getRubric = require('./getRubric')
+const getQuizRubric = require('./getQuizRubric')
 const writeToCSV = require('./writeToCSV')
+const writeQuizRubricToCSV = require('./writeQuizRubricToCSV')
 const prompts = require('prompts')
 
 const getIds = async () => {
@@ -51,11 +53,18 @@ const getIds = async () => {
   return [courseId, assignmentId, rubricId]
 }
 
-const getRubricAndWriteFile = async (courseId, assignmentId, rubricId) => {
+const getAssignmentRubricAndWriteFile = async (courseId, assignmentId, rubricId) => {
   console.log('Thanks, fetching data now. This may take a bit of time...')
   const rubricData = await getRubric(courseId, assignmentId, rubricId)
   writeToCSV(rubricData, `rubric-${courseId}-${assignmentId}-${rubricId}.csv`)
   console.log(`Data is ready now. It's named 'rubric-${courseId}-${assignmentId}-${rubricId}.csv'`)
+}
+
+const getQuizRubricAndWriteFile = async (courseId, quizId, rubricId) => {
+  console.log('Thanks, fetching data now. This may take a bit of time...')
+  const rubricData = await getQuizRubric(courseId, quizId, rubricId)
+  writeQuizRubricToCSV(rubricData, `rubric-${courseId}-${quizId}-${rubricId}.csv`)
+  console.log(`Data is ready now. It's named 'rubric-${courseId}-${quizId}-${rubricId}.csv'`)
 }
 
 (
@@ -67,8 +76,19 @@ const getRubricAndWriteFile = async (courseId, assignmentId, rubricId) => {
       initial: true
     }).then(x => x.value)
     if (!envSetup) {
-      console.log('Go set up your .env, instructions are on the README')
-    } else {
+      console.log('Go set up your .env first, instructions are on the README')
+      return
+    }
+    const quizOrAssignment = await prompts({
+      type: 'select',
+      name: 'value',
+      message: 'Do you want to download the rubric scores from Quizzes or Assignments?',
+      choices: [
+        { title: 'Quizzes', value: 'quizzes' },
+        { title: 'Assignments', value: 'assignments' }
+      ]
+    })
+    if (quizOrAssignment.value === 'assignments') {
       const knowIds = await prompts({
         type: 'confirm',
         name: 'value',
@@ -88,10 +108,36 @@ const getRubricAndWriteFile = async (courseId, assignmentId, rubricId) => {
           ids = idInput.value
         }
         const [courseId, assignmentId, rubricId] = ids.map(x => Number(x))
-        getRubricAndWriteFile(courseId, assignmentId, rubricId)
+        getAssignmentRubricAndWriteFile(courseId, assignmentId, rubricId)
       } else {
         const [courseId, assignmentId, rubricId] = await getIds()
-        getRubricAndWriteFile(courseId, assignmentId, rubricId)
+        getAssignmentRubricAndWriteFile(courseId, assignmentId, rubricId)
+      }
+    } else {
+      const knowIds = await prompts({
+        type: 'confirm',
+        name: 'value',
+        message: 'Do you know the Canvas course id, assignment id, and quiz id that you want to download?',
+        initial: true
+      }).then(x => x.value)
+      if (knowIds) {
+        let ids = []
+        while (ids.length !== 3) {
+          const idInput = await prompts({
+            type: 'list',
+            name: 'value',
+            message: 'Enter the course id, assignment id, and quiz id separated by a comma',
+            initial: '',
+            separator: ','
+          })
+          ids = idInput.value
+        }
+        const [courseId, assignmentId, quizId] = ids.map(x => Number(x))
+        getQuizRubricAndWriteFile(courseId, assignmentId, quizId)
+      } else {
+        // const [courseId, assignmentId, quizId] = await getIds()
+        // getQuizRubricAndWriteFile(courseId, assignmentId, quizId)
+        console.log('Please find these IDs in your Canvas course first.')
       }
     }
   }
