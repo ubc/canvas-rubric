@@ -1,5 +1,5 @@
 # Canvas Rubric
-Download assignment rubric scores and comments. Also able to download quiz rubric scores by calling `getQuizRubric` directly.
+Download Assignments and Quiz rubric scores (and comments, only for Assignments right now) .
 
 Canvas Rubric returns a CSV with the following headers:
 * Student Name
