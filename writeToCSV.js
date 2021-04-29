@@ -33,10 +33,10 @@ const writeToCSV = (data, filename) => {
 
   data.forEach(studentData => {
     const row = [
-      studentData.studentName,
+      escapeComment(studentData.studentName),
       studentData.studentNumber,
       studentData.section,
-      studentData.taName,
+      escapeComment(studentData.taName),
       studentData.taStudentNumber,
       studentData.totalGrade,
       studentData.url
