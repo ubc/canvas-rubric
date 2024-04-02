@@ -15,6 +15,8 @@ const writeToCSV = (data, filename) => {
   const header = [
     'student_name',
     'student_number',
+    'submission_state',
+    'submission_id',
     'section_number',
     'ta_name',
     'ta_number',
@@ -35,6 +37,8 @@ const writeToCSV = (data, filename) => {
     const row = [
       escapeComment(studentData.studentName),
       studentData.studentNumber,
+      studentData.submissionState,
+      studentData.submissionId,
       studentData.section,
       escapeComment(studentData.taName),
       studentData.taStudentNumber,

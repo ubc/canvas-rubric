@@ -49,7 +49,10 @@ async function getRubric (courseId, assignmentId, rubricId) {
         .map(comment => comment.comment)
       : []
 
+    const submissionState = submission.workflow_state
+
     return {
+      submissionId,
       taName,
       taStudentNumber,
       studentName,
@@ -58,7 +61,8 @@ async function getRubric (courseId, assignmentId, rubricId) {
       rubricData,
       section,
       url,
-      overallComments
+      overallComments,
+      submissionState
     }
   })
 }
