@@ -15,44 +15,48 @@ const writeToCSV = (data, filename) => {
   const header = [
     'student_name',
     'student_number',
+    'student_canvas_id',
+    'student_role',
+    'section_name',    
     'submission_state',
-    'submission_id',
-    'section_number',
-    'ta_name',
-    'ta_number',
-    'total_score',
-    'download_link'
+    'submission_score',,
+    'grader_id',
+    'grader_name',
+    'grader_role',
+    'overall_comments'
   ]
 
-  data[0].rubricData.forEach((_, i) => {
-    header.push(`rubric_${i + 1}_grade`)
-    header.push(`rubric_${i + 1}_comments`)
-  })
+  // data[0].rubricData.forEach((_, i) => {
+  //   header.push(`rubric_${i + 1}_grade`)
+  //   header.push(`rubric_${i + 1}_comments`)
+  // })
 
-  header.push('overall_comments')
+  // header.push('overall_comments')
 
   writeHeader(csv, header)
 
   data.forEach(studentData => {
     const row = [
-      escapeComment(studentData.studentName),
-      studentData.studentNumber,
+      escapeComment(studentData.userName),
+      studentData.userSISID,
+      studentData.userCanvasID,
+      studentData.enrollmentType,
+      studentData.sectionName,
       studentData.submissionState,
-      studentData.submissionId,
-      studentData.section,
-      escapeComment(studentData.taName),
-      studentData.taStudentNumber,
-      studentData.totalGrade,
-      studentData.url
+      studentData.submissionScore,
+      studentData.graderId,
+      escapeComment(studentData.graderName),
+      studentData.graderRole,
+      studentData.overallComments
     ]
 
-    studentData.rubricData.forEach(({ points, comments }) => {
-      row.push(points)
-      row.push(escapeComment(comments))
-    })
+    // studentData.rubricData.forEach(({ points, comments }) => {
+    //   row.push(points)
+    //   row.push(escapeComment(comments))
+    // })
 
-    studentData.overallComments.forEach(comments => row.push(escapeComment(comments)))
-
+    // studentData.overallComments.forEach(comments => row.push(escapeComment(comments)))
+    console.log(row)
     append(csv, row)
   })
 }
