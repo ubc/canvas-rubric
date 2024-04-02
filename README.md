@@ -33,6 +33,7 @@ An example `CANVAS_API_DOMAIN` is `https://{school}.instructure.com/api/v1`
 1. Run the installation script. `npm install` (If you see `babel-node: command not found`, you've missed this step.)
 1. Run the application. `npm start`
 1. You'll be asked a series of prompts, and then the data will be output in `output` folder.
+1. If you re-run the script for the same course, we recommend deleting the previous output file first
 
 ## Authors
 

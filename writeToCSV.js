@@ -25,8 +25,7 @@ const writeToCSV = (data, filename) => {
     'grader_role',
     'rubricScore',
     'rubricGraderName',
-    'rubricGraderRole',
-    'overall_comments'
+    'rubricGraderRole'
   ]
 
   data[0].rubricData.forEach((_, i) => {
@@ -34,7 +33,7 @@ const writeToCSV = (data, filename) => {
     header.push(`rubric_${i + 1}_comments`)
   })
 
-  // header.push('overall_comments')
+  header.push('overall_comments')
 
   writeHeader(csv, header)
 
@@ -52,8 +51,7 @@ const writeToCSV = (data, filename) => {
       studentData.graderRole,
       studentData.rubricScore,
       escapeComment(studentData.rubricGraderName),
-      studentData.rubricGraderRole,
-      studentData.overallComments  
+      studentData.rubricGraderRole
     ]
 
     studentData.rubricData.forEach(({ points, comments }) => {
@@ -61,7 +59,7 @@ const writeToCSV = (data, filename) => {
       row.push(escapeComment(comments))
     })
 
-    // studentData.overallComments.forEach(comments => row.push(escapeComment(comments)))
+    studentData.overallComments.forEach(comments => row.push(escapeComment(comments)))
     //console.log(row)
     append(csv, row)
   })
