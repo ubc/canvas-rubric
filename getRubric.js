@@ -2,69 +2,70 @@ const { flatten } = require('ramda')
 const canvasAPI = require('node-canvas-api')
 
 async function getRubric (courseId, assignmentId, rubricId) {
-  const [TAs, submissions, rubric, sections] = await Promise.all([
-    canvasAPI.getUsersInCourse(courseId, canvasAPI.getOptions.users.enrollmentType.ta),
-    canvasAPI.getAssignmentSubmissions(courseId, assignmentId, canvasAPI.getOptions.submissions.submission_comments),
+  const [enrollments, submissions, sections] = await Promise.all([
+    canvasAPI.getEnrollmentsInCourse(courseId),
+    canvasAPI.getAssignmentSubmissions(courseId, assignmentId, canvasAPI.getOptions.submissions.submission_comments, canvasAPI.getOptions.submissions.rubric_assessment),
     canvasAPI.getRubric(courseId, rubricId),
-    canvasAPI.getSections(courseId, canvasAPI.getOptions.users.include.students)
-      .then(sections => flatten(
-        sections
-          .map(({ name, students }) => students
-            .map(student => ({ ...student, section: name }))
-          )
-      ))
+    canvasAPI.getSections(courseId)
   ])
-  return rubric.assessments.map(assessment => {
-    // get TA info
-    const taId = assessment.assessor_id
-    const TA = TAs.find(ta => ta.id === taId) || {}
-    const taName = TA.name || ''
-    const taStudentNumber = TA.sis_user_id || ''
 
-    // get student info
-    const submissionId = assessment.artifact_id
-    const submission = submissions
-      .find(submission => submission.id === submissionId) || {}
-    const studentId = submission.user_id || ''
-    const student = sections
-      .find(student => student.id === studentId) || {}
-    const studentName = student.name || ''
-    const studentNumber = student.sis_user_id || ''
-    const section = student.section || ''
+  console.log(enrollments)
+  console.log(submissions)
+  console.log(sections)
 
-    // get rubric info
-    const totalGrade = assessment.score
-    const rubricData = assessment.data
-      .map(({ points, comments }) => ({ points, comments }))
+  return ({enrollments, submissions, sections})
+  
+  // return rubric.assessments.map(assessment => {
+  //   // get TA info
+  //   const assessorId = assessment.assessor_id
+  //   const assessor = enrollments.find(enrollment => enrollment.id === assessorId) || {}
+  //   const assessorName = assessor.name || ''
+  //   const assessorSISId = assessor.sis_user_id || ''
 
-    // link to assignment
-    const url = submission.attachments
-      ? submission.attachments[0].url
-      : ''
+  //   // get student info
+  //   const submissionId = assessment.artifact_id
+  //   const submission = submissions
+  //     .find(submission => submission.id === submissionId) || {}
+  //   const studentId = submission.user_id || ''
+  //   const student = sections
+  //     .find(student => student.id === studentId) || {}
+  //   const studentName = student.name || ''
+  //   const studentNumber = student.sis_user_id || ''
+  //   const section = student.section || ''
 
-    // assignment overall comments, filter out student comments
-    const overallComments = submission.submission_comments
-      ? submission.submission_comments
-        .filter(comment => comment.author.id !== studentId)
-        .map(comment => comment.comment)
-      : []
+  //   // get rubric info
+  //   const totalGrade = assessment.score
+  //   const rubricData = assessment.data
+  //     .map(({ points, comments }) => ({ points, comments }))
 
-    const submissionState = submission.workflow_state
+  //   // link to assignment
+  //   const url = submission.attachments
+  //     ? submission.attachments[0].url
+  //     : ''
 
-    return {
-      submissionId,
-      taName,
-      taStudentNumber,
-      studentName,
-      studentNumber,
-      totalGrade,
-      rubricData,
-      section,
-      url,
-      overallComments,
-      submissionState
-    }
-  })
+  //   // assignment overall comments, filter out student comments
+  //   const overallComments = submission.submission_comments
+  //     ? submission.submission_comments
+  //       .filter(comment => comment.author.id !== studentId)
+  //       .map(comment => comment.comment)
+  //     : []
+
+  //   const submissionState = submission.workflow_state
+
+  //   return {
+  //     submissionId,
+  //     taName,
+  //     enrollmentstudentNumber,
+  //     studentName,
+  //     studentNumber,
+  //     totalGrade,
+  //     rubricData,
+  //     section,
+  //     url,
+  //     overallComments,
+  //     submissionState
+  //   }
+  // })
 }
 
 module.exports = getRubric
