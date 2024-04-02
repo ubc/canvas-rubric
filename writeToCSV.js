@@ -16,16 +16,16 @@ const writeToCSV = (data, filename) => {
     'student_name',
     'student_number',
     'student_canvas_id',
-    'student_role',
+    //'student_role',
     'section_name',    
     'submission_state',
     'submission_score',
-    'grader_id',
-    'grader_name',
-    'grader_role',
-    'rubricScore',
-    'rubricGraderName',
-    'rubricGraderRole'
+    //'grader_id',
+    //'grader_name',
+    //'grader_role',
+    'rubric_grader_name',
+    'rubric_grader_role',
+    'total_rubric_score',
   ]
 
   data[0].rubricData.forEach((_, i) => {
@@ -42,16 +42,16 @@ const writeToCSV = (data, filename) => {
       escapeComment(studentData.userName),
       studentData.userSISID,
       studentData.userCanvasID,
-      studentData.enrollmentType,
+      //studentData.enrollmentType,
       studentData.sectionName,
       studentData.submissionState,
       studentData.submissionScore,
-      studentData.graderId,
-      escapeComment(studentData.graderName),
-      studentData.graderRole,
-      studentData.rubricScore,
+      //studentData.graderId,
+      //escapeComment(studentData.graderName),
+      //studentData.graderRole,
       escapeComment(studentData.rubricGraderName),
-      studentData.rubricGraderRole
+      studentData.rubricGraderRole,
+      studentData.rubricScore,
     ]
 
     studentData.rubricData.forEach(({ points, comments }) => {
@@ -60,7 +60,6 @@ const writeToCSV = (data, filename) => {
     })
 
     studentData.overallComments.forEach(comments => row.push(escapeComment(comments)))
-    //console.log(row)
     append(csv, row)
   })
 }

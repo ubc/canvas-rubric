@@ -1,16 +1,20 @@
 # Canvas Rubric
-Download Assignments and Quiz rubric scores (and comments, only for Assignments right now) .
+Download Assignments and Quiz rubric scores (and comments, only for Assignments right now).
+
+A canvas submission has two scores: the Submission Score and the Rubric Total Score. These may be provided by different users (i.e a TA uses the rubric and the Instructor gives a final score). The data provided here only indicates the Rubric Grader which may be different than the provider of the Submission Score.
 
 Canvas Rubric returns a CSV with the following headers:
 * Student Name
-* Student Number
-* Section Number
-* TA Name
-* TA Student Number
-* Total grade on assignment
-* Link to download assignment submission
+* Student Number (SIS ID)
+* Student Canvas ID
+* Section Name
+* Submission State
+* Submission Score [the score given to the submission, seperate from the rubric]
+* Rubric Grader Name
+* Rubric Grader Role
+* Rubric Total Score [the total score from the rubric]
 * Each individual component of the rubric (grade and comments)
-* Overall comments made by TA/Instructor only (student comments are filtered out)
+* Overall submission comments made by non-students only (student comments are filtered out)
 
 ## Getting Started
 
