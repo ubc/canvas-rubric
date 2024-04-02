@@ -19,17 +19,20 @@ const writeToCSV = (data, filename) => {
     'student_role',
     'section_name',    
     'submission_state',
-    'submission_score',,
+    'submission_score',
     'grader_id',
     'grader_name',
     'grader_role',
+    'rubricScore',
+    'rubricGraderName',
+    'rubricGraderRole',
     'overall_comments'
   ]
 
-  // data[0].rubricData.forEach((_, i) => {
-  //   header.push(`rubric_${i + 1}_grade`)
-  //   header.push(`rubric_${i + 1}_comments`)
-  // })
+  data[0].rubricData.forEach((_, i) => {
+    header.push(`rubric_${i + 1}_grade`)
+    header.push(`rubric_${i + 1}_comments`)
+  })
 
   // header.push('overall_comments')
 
@@ -47,16 +50,19 @@ const writeToCSV = (data, filename) => {
       studentData.graderId,
       escapeComment(studentData.graderName),
       studentData.graderRole,
-      studentData.overallComments
+      studentData.rubricScore,
+      escapeComment(studentData.rubricGraderName),
+      studentData.rubricGraderRole,
+      studentData.overallComments  
     ]
 
-    // studentData.rubricData.forEach(({ points, comments }) => {
-    //   row.push(points)
-    //   row.push(escapeComment(comments))
-    // })
+    studentData.rubricData.forEach(({ points, comments }) => {
+      row.push(points)
+      row.push(escapeComment(comments))
+    })
 
     // studentData.overallComments.forEach(comments => row.push(escapeComment(comments)))
-    console.log(row)
+    //console.log(row)
     append(csv, row)
   })
 }
