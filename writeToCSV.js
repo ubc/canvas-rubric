@@ -18,7 +18,7 @@ const writeToCSV = (data, filename) => {
     'section_number',
     'ta_name',
     'ta_number',
-    'total_paper_grade',
+    'total_score',
     'download_link'
   ]
 
