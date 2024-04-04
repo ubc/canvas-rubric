@@ -1,4 +1,3 @@
-const { flatten } = require('ramda')
 const canvasAPI = require('node-canvas-api')
 
 async function getRubric (courseId, assignmentId, rubricId) {
