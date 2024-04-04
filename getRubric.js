@@ -8,8 +8,8 @@ async function getRubric (courseId, assignmentId, rubricId) {
     canvasAPI.getSections(courseId)
   ])
 
-  const students = enrollments.filter(enrollment => enrollment.type == 'StudentEnrollment') // excludes StudentViewEnrollment but keeps StudentEnrollment, to keep studentView use enrollment.role
-  const nonStudents = enrollments.filter(enrollment => enrollment.role != 'StudentEnrollment') // excludes both StudentViewEnrollment and StudentEnrollment
+  const students = enrollments.filter(enrollment => enrollment.type === 'StudentEnrollment') // excludes StudentViewEnrollment but keeps StudentEnrollment, to keep studentView use enrollment.role
+  const nonStudents = enrollments.filter(enrollment => enrollment.role !== 'StudentEnrollment') // excludes both StudentViewEnrollment and StudentEnrollment
   
   return students.map(student => {
     const user = student.user || ''
@@ -19,15 +19,15 @@ async function getRubric (courseId, assignmentId, rubricId) {
     const userSISID = user.sis_user_id || ''
     const userCanvasID = user.id || ''
 
-    const section = sections.find(student => student.course_section_id == sections.id ) || {}
+    const section = sections.find(student => student.course_section_id === sections.id ) || {}
     const sectionName = section.name || ''
 
-    const submission = submissions.find(submission => submission.user_id == user.id) || {}
+    const submission = submissions.find(submission => submission.user_id === user.id) || {}
     const submissionId = submission.id || ''
     const submissionState = submission.workflow_state || ''
     
     const graderId = submission.grader_id || ''
-    const grader = nonStudents.find(nonStudent => nonStudent.user_id == graderId) || {}
+    const grader = nonStudents.find(nonStudent => nonStudent.user_id === graderId) || {}
 
     const graderName = (grader.user && grader.user.name) || ''
     const graderRole = grader.role || ''
@@ -39,14 +39,14 @@ async function getRubric (courseId, assignmentId, rubricId) {
       .map(comment => comment.comment)
     : []
   
-    const rubricAssessments = rubrics.assessments.find(rubric => rubric.artifact_id == submissionId) || {}
+    const rubricAssessments = rubrics.assessments.find(rubric => rubric.artifact_id === submissionId) || {}
 
     const rubricScore = rubricAssessments.score || ''
 
-    const rubricData = (rubricAssessments.data || []).map(({ points, comments }) => ({ points, comments }));
+    const rubricData = (rubricAssessments.data || []).map(({ points, comments }) => ({ points, comments }))
 
 
-    const rubricGrader = nonStudents.find(nonStudent => nonStudent.user_id == rubricAssessments.assessor_id) || {}
+    const rubricGrader = nonStudents.find(nonStudent => nonStudent.user_id === rubricAssessments.assessor_id) || {}
     const rubricGraderName = (rubricGrader.user && rubricGrader.user.name) || ''
     const rubricGraderRole = rubricGrader.role || ''
 
