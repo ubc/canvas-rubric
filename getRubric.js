@@ -9,6 +9,7 @@ async function getRubric (courseId, assignmentId, rubricId) {
   ])
 
   const students = enrollments.filter(enrollment => enrollment.type === 'StudentEnrollment') // excludes StudentViewEnrollment but keeps StudentEnrollment, to keep studentView use enrollment.role
+  // const students = enrollments.filter(enrollment => enrollment.role === 'StudentEnrollment') use for testing
   const nonStudents = enrollments.filter(enrollment => enrollment.role !== 'StudentEnrollment') // excludes both StudentViewEnrollment and StudentEnrollment
   
   return students.map(student => {
@@ -32,7 +33,7 @@ async function getRubric (courseId, assignmentId, rubricId) {
     const graderName = (grader.user && grader.user.name) || ''
     const graderRole = grader.role || ''
 
-    const submissionScore = submission.score || ''
+    const submissionScore = submission.score !== null ? submission.score : '';
     const overallComments = submission.submission_comments
     ? submission.submission_comments
       .filter(comment => comment.author.id !== userCanvasID)
@@ -41,15 +42,13 @@ async function getRubric (courseId, assignmentId, rubricId) {
   
     const rubricAssessments = rubrics.assessments.find(rubric => rubric.artifact_id === submissionId) || {}
 
-    const rubricScore = rubricAssessments.score || ''
+    const rubricScore = rubricAssessments.score !== null ? rubricAssessments.score : '';
 
     const rubricData = (rubricAssessments.data || []).map(({ points, comments }) => ({ points, comments }))
-
 
     const rubricGrader = nonStudents.find(nonStudent => nonStudent.user_id === rubricAssessments.assessor_id) || {}
     const rubricGraderName = (rubricGrader.user && rubricGrader.user.name) || ''
     const rubricGraderRole = rubricGrader.role || ''
-
 
     return {
       userName,
