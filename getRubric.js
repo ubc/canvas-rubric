@@ -8,8 +8,8 @@ async function getRubric (courseId, assignmentId, rubricId) {
     canvasAPI.getSections(courseId)
   ])
 
-  const students = enrollments.filter(enrollment => enrollment.type === 'StudentEnrollment') // excludes StudentViewEnrollment but keeps StudentEnrollment, to keep studentView use enrollment.role
-  // const students = enrollments.filter(enrollment => enrollment.role === 'StudentEnrollment') use for testing
+  // const students = enrollments.filter(enrollment => enrollment.type === 'StudentEnrollment') // excludes StudentViewEnrollment but keeps StudentEnrollment, to keep studentView use enrollment.role
+  const students = enrollments.filter(enrollment => enrollment.role === 'StudentEnrollment') // use for testing
   const nonStudents = enrollments.filter(enrollment => enrollment.role !== 'StudentEnrollment') // excludes both StudentViewEnrollment and StudentEnrollment
   
   return students.map(student => {
