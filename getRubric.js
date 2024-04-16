@@ -12,7 +12,7 @@ async function getRubric (courseId, assignmentId, rubricId) {
   const students = enrollments.filter(enrollment => enrollment.role === 'StudentEnrollment') // use for testing
   const nonStudents = enrollments.filter(enrollment => enrollment.role !== 'StudentEnrollment') // excludes both StudentViewEnrollment and StudentEnrollment
   
-  return students.map(student => {
+  const studentData = students.map(student => {
     const user = student.user || ''
     const enrollmentType = student.type || ''
 
@@ -67,8 +67,12 @@ async function getRubric (courseId, assignmentId, rubricId) {
       rubricData,
       overallComments
     }
-
   })
+
+  return {
+    studentData,
+    rubrics
+  }
 }
 
 module.exports = getRubric

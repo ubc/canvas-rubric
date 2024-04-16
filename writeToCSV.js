@@ -7,7 +7,7 @@ const append = (pathToFile, row) => fsappend(pathToFile, row + '\r\n')
 
 const escapeComment = comment => '"' + comment.replace(/"/g, "'") + '"'
 
-const writeToCSV = (data, filename) => {
+const writeToCSV = (studentData, rubrics, filename) => {
   const csv = path.join(__dirname, '/output/', filename)
 
   const header = [
@@ -26,7 +26,7 @@ const writeToCSV = (data, filename) => {
     'total_rubric_score',
   ]
 
-  data[0].rubricData.forEach((_, i) => {
+  rubrics.data.forEach((_, i) => {
     header.push(`rubric_${i + 1}_grade`)
     header.push(`rubric_${i + 1}_comments`)
   })
@@ -35,29 +35,29 @@ const writeToCSV = (data, filename) => {
 
   writeHeader(csv, header)
 
-  data.forEach(studentData => {
+  studentData.forEach(sd => {
     const row = [
-      escapeComment(studentData.userName),
-      studentData.userSISID,
-      studentData.userCanvasID,
+      escapeComment(sd.userName),
+      sd.userSISID,
+      sd.userCanvasID,
       //studentData.enrollmentType,
-      studentData.sectionName,
-      studentData.submissionState,
-      studentData.submissionScore,
+      sd.sectionName,
+      sd.submissionState,
+      sd.submissionScore,
       //studentData.graderId,
       //escapeComment(studentData.graderName),
       //studentData.graderRole,
-      escapeComment(studentData.rubricGraderName),
-      studentData.rubricGraderRole,
-      studentData.rubricScore,
+      escapeComment(sd.rubricGraderName),
+      sd.rubricGraderRole,
+      sd.rubricScore,
     ]
 
-    studentData.rubricData.forEach(({ points, comments }) => {
+    sd.rubricData.forEach(({ points, comments }) => {
       row.push(points)
       row.push(escapeComment(comments))
     })
 
-    studentData.overallComments.forEach(comments => row.push(escapeComment(comments)))
+    sd.overallComments.forEach(comments => row.push(escapeComment(comments)))
     append(csv, row)
   })
 }
