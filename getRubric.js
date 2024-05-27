@@ -1,66 +1,78 @@
-const { flatten } = require('ramda')
 const canvasAPI = require('node-canvas-api')
 
 async function getRubric (courseId, assignmentId, rubricId) {
-  const [TAs, submissions, rubric, sections] = await Promise.all([
-    canvasAPI.getUsersInCourse(courseId, canvasAPI.getOptions.users.enrollmentType.ta),
-    canvasAPI.getAssignmentSubmissions(courseId, assignmentId, canvasAPI.getOptions.submissions.submission_comments),
+  const [enrollments, submissions, rubrics, sections] = await Promise.all([
+    canvasAPI.getEnrollmentsInCourse(courseId),
+    canvasAPI.getAssignmentSubmissions(courseId, assignmentId, canvasAPI.getOptions.submissions.submission_comments, canvasAPI.getOptions.submissions.rubric_assessment),
     canvasAPI.getRubric(courseId, rubricId),
-    canvasAPI.getSections(courseId, canvasAPI.getOptions.users.include.students)
-      .then(sections => flatten(
-        sections
-          .map(({ name, students }) => students
-            .map(student => ({ ...student, section: name }))
-          )
-      ))
+    canvasAPI.getSections(courseId)
   ])
-  return rubric.assessments.map(assessment => {
-    // get TA info
-    const taId = assessment.assessor_id
-    const TA = TAs.find(ta => ta.id === taId) || {}
-    const taName = TA.name || ''
-    const taStudentNumber = TA.sis_user_id || ''
 
-    // get student info
-    const submissionId = assessment.artifact_id
-    const submission = submissions
-      .find(submission => submission.id === submissionId) || {}
-    const studentId = submission.user_id || ''
-    const student = sections
-      .find(student => student.id === studentId) || {}
-    const studentName = student.name || ''
-    const studentNumber = student.sis_user_id || ''
-    const section = student.section || ''
+  // const students = enrollments.filter(enrollment => enrollment.type === 'StudentEnrollment') // excludes StudentViewEnrollment but keeps StudentEnrollment, to keep studentView use enrollment.role
+  const students = enrollments.filter(enrollment => enrollment.role === 'StudentEnrollment') // use for testing
+  const nonStudents = enrollments.filter(enrollment => enrollment.role !== 'StudentEnrollment') // excludes both StudentViewEnrollment and StudentEnrollment
+  
+  const studentData = students.map(student => {
+    const user = student.user || ''
+    const enrollmentType = student.type || ''
 
-    // get rubric info
-    const totalGrade = assessment.score
-    const rubricData = assessment.data
-      .map(({ points, comments }) => ({ points, comments }))
+    const userName = user.name || ''
+    const userSISID = user.sis_user_id || ''
+    const userCanvasID = user.id || ''
 
-    // link to assignment
-    const url = submission.attachments
-      ? submission.attachments[0].url
-      : ''
+    const section = sections.find(student => student.course_section_id === sections.id ) || {}
+    const sectionName = section.name || ''
 
-    // assignment overall comments, filter out student comments
+    const submission = submissions.find(submission => submission.user_id === user.id) || {}
+    const submissionId = submission.id || ''
+    const submissionState = submission.workflow_state || ''
+    
+    const graderId = submission.grader_id || ''
+    const grader = nonStudents.find(nonStudent => nonStudent.user_id === graderId) || {}
+
+    const graderName = (grader.user && grader.user.name) || ''
+    const graderRole = grader.role || ''
+
+    const submissionScore = submission.score !== null ? submission.score : '';
     const overallComments = submission.submission_comments
-      ? submission.submission_comments
-        .filter(comment => comment.author.id !== studentId)
-        .map(comment => comment.comment)
-      : []
+    ? submission.submission_comments
+      .filter(comment => comment.author.id !== userCanvasID)
+      .map(comment => comment.comment)
+    : []
+  
+    const rubricAssessments = rubrics.assessments.find(rubric => rubric.artifact_id === submissionId) || {}
+
+    const rubricScore = rubricAssessments.score !== null ? rubricAssessments.score : '';
+
+    const rubricData = (rubricAssessments.data || []).map(({ points, comments }) => ({ points, comments }))
+
+    const rubricGrader = nonStudents.find(nonStudent => nonStudent.user_id === rubricAssessments.assessor_id) || {}
+    const rubricGraderName = (rubricGrader.user && rubricGrader.user.name) || ''
+    const rubricGraderRole = rubricGrader.role || ''
 
     return {
-      taName,
-      taStudentNumber,
-      studentName,
-      studentNumber,
-      totalGrade,
+      userName,
+      userSISID,
+      userCanvasID,
+      enrollmentType,
+      sectionName,
+      submissionState,
+      submissionScore,
+      graderId,
+      graderName,
+      graderRole,
+      rubricScore,
+      rubricGraderName,
+      rubricGraderRole,
       rubricData,
-      section,
-      url,
       overallComments
     }
   })
+
+  return {
+    studentData,
+    rubrics
+  }
 }
 
 module.exports = getRubric

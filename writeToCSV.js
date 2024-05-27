@@ -1,28 +1,32 @@
 const fs = require('fs')
 const path = require('path')
-const { promisify } = require('util')
-const fswrite = promisify(fs.writeFile)
-const fsappend = promisify(fs.appendFile)
-
+const fswrite = fs.writeFileSync
+const fsappend = fs.appendFileSync
 const writeHeader = (pathToFile, header) => fswrite(pathToFile, header + '\r\n')
 const append = (pathToFile, row) => fsappend(pathToFile, row + '\r\n')
 
 const escapeComment = comment => '"' + comment.replace(/"/g, "'") + '"'
 
-const writeToCSV = (data, filename) => {
+const writeToCSV = (studentData, rubrics, filename) => {
   const csv = path.join(__dirname, '/output/', filename)
 
   const header = [
     'student_name',
     'student_number',
-    'section_number',
-    'ta_name',
-    'ta_number',
-    'total_paper_grade',
-    'download_link'
+    'student_canvas_id',
+    //'student_role',
+    'section_name',    
+    'submission_state',
+    'submission_score',
+    //'grader_id',
+    //'grader_name',
+    //'grader_role',
+    'rubric_grader_name',
+    'rubric_grader_role',
+    'total_rubric_score',
   ]
 
-  data[0].rubricData.forEach((_, i) => {
+  rubrics.data.forEach((_, i) => {
     header.push(`rubric_${i + 1}_grade`)
     header.push(`rubric_${i + 1}_comments`)
   })
@@ -31,24 +35,29 @@ const writeToCSV = (data, filename) => {
 
   writeHeader(csv, header)
 
-  data.forEach(studentData => {
+  studentData.forEach(sd => {
     const row = [
-      escapeComment(studentData.studentName),
-      studentData.studentNumber,
-      studentData.section,
-      escapeComment(studentData.taName),
-      studentData.taStudentNumber,
-      studentData.totalGrade,
-      studentData.url
+      escapeComment(sd.userName),
+      sd.userSISID,
+      sd.userCanvasID,
+      //studentData.enrollmentType,
+      sd.sectionName,
+      sd.submissionState,
+      sd.submissionScore,
+      //studentData.graderId,
+      //escapeComment(studentData.graderName),
+      //studentData.graderRole,
+      escapeComment(sd.rubricGraderName),
+      sd.rubricGraderRole,
+      sd.rubricScore,
     ]
 
-    studentData.rubricData.forEach(({ points, comments }) => {
+    sd.rubricData.forEach(({ points, comments }) => {
       row.push(points)
       row.push(escapeComment(comments))
     })
 
-    studentData.overallComments.forEach(comments => row.push(escapeComment(comments)))
-
+    sd.overallComments.forEach(comments => row.push(escapeComment(comments)))
     append(csv, row)
   })
 }
