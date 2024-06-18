@@ -35,7 +35,8 @@ An example `CANVAS_API_DOMAIN` is `https://{school}.instructure.com/api/v1`
 1. Clone this repo. `git clone https://github.com/ubccapico/canvas-rubric.git`
 1. Then cd into the repo. `cd canvas-rubric`
 1. Run the installation script. `npm install` (If you see `babel-node: command not found`, you've missed this step.)
-1. Run the application. `npm start`
+2. Open `index.js` and edit the courseId, assignmentId, and rubricId.
+1. Run the application. `node index.js`
 1. You'll be asked a series of prompts, and then the data will be output in `output` folder.
 1. If you re-run the script for the same course, we recommend deleting the previous output file first
 
