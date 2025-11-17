@@ -13,5 +13,11 @@
     "node-canvas-api": "^1.7.6",
     "prompts": "^2.3.2",
     "ramda": "^0.26.1"
+  },
+  "overrides": {
+    "request": {
+      "form-data": "2.5.4"
+    },
+    "tough-cookie": "4.1.3"
   }
 }
