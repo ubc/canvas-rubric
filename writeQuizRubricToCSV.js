@@ -1,8 +1,11 @@
-const fs = require('fs')
-const path = require('path')
-const { promisify } = require('util')
-const fswrite = promisify(fs.writeFile)
-const fsappend = promisify(fs.appendFile)
+import fs from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+const fswrite = fs.writeFileSync
+const fsappend = fs.appendFileSync
 
 const writeHeader = (pathToFile, header) => fswrite(pathToFile, header + '\r\n')
 const append = (pathToFile, row) => fsappend(pathToFile, row + '\r\n')
@@ -39,4 +42,4 @@ const writeToCSV = (data, filename) => {
   })
 }
 
-module.exports = writeToCSV
+export default writeToCSV

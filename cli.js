@@ -1,13 +1,18 @@
-const canvasAPI = require('node-canvas-api')
-const getRubric = require('./getRubric')
-const getQuizRubric = require('./getQuizRubric')
-const writeToCSV = require('./writeToCSV')
-const writeQuizRubricToCSV = require('./writeQuizRubricToCSV')
-const prompts = require('prompts')
+import {
+  getAssignments,
+  getCoursesByUser,
+  getRubricsInCourse,
+  getSelf
+} from 'node-canvas-api'
+import getRubric from './getRubric.js'
+import getQuizRubric from './getQuizRubric.js'
+import writeToCSV from './writeToCSV.js'
+import writeQuizRubricToCSV from './writeQuizRubricToCSV.js'
+import prompts from 'prompts'
 
 const getIds = async () => {
-  const self = await canvasAPI.getSelf()
-  const courses = await canvasAPI.getCoursesByUser(self.id)
+  const self = await getSelf()
+  const courses = await getCoursesByUser(self.id)
     .then(courses => courses
       .map(course => ({
         title: `${course.name}, offered ${course.start_at.split('T')[0]}`,
@@ -21,7 +26,7 @@ const getIds = async () => {
     choices: courses,
     initial: 0
   }).then(x => x.value)
-  const assignments = await canvasAPI.getAssignments(courseId)
+  const assignments = await getAssignments(courseId)
     .then(assignments => assignments
       .map(assignment => ({
         title: assignment.name,
@@ -35,7 +40,7 @@ const getIds = async () => {
     choices: assignments,
     initial: 0
   }).then(x => x.value)
-  const rubrics = await canvasAPI.getRubricsInCourse(courseId)
+  const rubrics = await getRubricsInCourse(courseId)
     .then(rubrics => rubrics
       .map(rubric => ({
         title: rubric.title,

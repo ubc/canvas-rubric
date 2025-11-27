@@ -1,11 +1,22 @@
-const canvasAPI = require('node-canvas-api')
+import {
+  getAssignmentSubmissions,
+  getEnrollmentsInCourse,
+  getOptions,
+  getRubric as getCanvasRubric,
+  getSections
+} from 'node-canvas-api'
 
-async function getRubric (courseId, assignmentId, rubricId) {
+export default async function getRubric (courseId, assignmentId, rubricId) {
   const [enrollments, submissions, rubrics, sections] = await Promise.all([
-    canvasAPI.getEnrollmentsInCourse(courseId),
-    canvasAPI.getAssignmentSubmissions(courseId, assignmentId, canvasAPI.getOptions.submissions.submission_comments, canvasAPI.getOptions.submissions.rubric_assessment),
-    canvasAPI.getRubric(courseId, rubricId),
-    canvasAPI.getSections(courseId)
+    getEnrollmentsInCourse(courseId),
+    getAssignmentSubmissions(
+      courseId,
+      assignmentId,
+      getOptions.submissions.submission_comments,
+      getOptions.submissions.rubric_assessment
+    ),
+    getCanvasRubric(courseId, rubricId),
+    getSections(courseId)
   ])
 
   // const students = enrollments.filter(enrollment => enrollment.type === 'StudentEnrollment') // excludes StudentViewEnrollment but keeps StudentEnrollment, to keep studentView use enrollment.role
@@ -74,5 +85,3 @@ async function getRubric (courseId, assignmentId, rubricId) {
     rubrics
   }
 }
-
-module.exports = getRubric

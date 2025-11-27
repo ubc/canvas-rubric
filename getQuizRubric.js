@@ -1,15 +1,17 @@
-const { flatten } = require('ramda')
-const canvasAPI = require('node-canvas-api')
-// const writeQuizRubricToCSV = require('./writeQuizRubricToCSV')
+import { flatten } from 'ramda'
+import {
+  getOptions,
+  getQuizSubmissions,
+  getRubric as getCanvasRubric,
+  getSections
+} from 'node-canvas-api'
 
-async function getQuizRubric (courseId, quizId, rubricId) {
+export default async function getQuizRubric (courseId, quizId, rubricId) {
   const [quizSubmissions, rubric, sections] = await Promise.all([
-    canvasAPI.getQuizSubmissions(courseId, quizId)
-      .then(submissions =>
-        flatten(submissions.map(x => x.quiz_submissions))
-      ),
-    canvasAPI.getRubric(courseId, rubricId),
-    canvasAPI.getSections(courseId, canvasAPI.getOptions.users.include.students)
+    getQuizSubmissions(courseId, quizId)
+      .then(submissions => flatten(submissions.map(x => x.quiz_submissions))),
+    getCanvasRubric(courseId, rubricId),
+    getSections(courseId, getOptions.users.include.students)
       .then(sections => flatten(
         sections
           .map(({ name, students }) => students
@@ -44,5 +46,3 @@ async function getQuizRubric (courseId, quizId, rubricId) {
     }
   })
 }
-
-module.exports = getQuizRubric

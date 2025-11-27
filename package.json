@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node cli.js"
@@ -10,8 +11,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "node-canvas-api": "^1.7.6",
+    "node-canvas-api": "^2.0.0",
     "prompts": "^2.3.2",
     "ramda": "^0.26.1"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }
